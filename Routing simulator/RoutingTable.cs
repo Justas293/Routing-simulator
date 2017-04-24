@@ -11,6 +11,7 @@ namespace Routing_simulator
         private List<string> DestinationIP { get; set; }
         private List<string> NextHopIP { get; set; }
         private List<int> DistanceMetric { get; set; }
+        private List<Node> NeighborNodes;
 
         public RoutingTable()
         {
