@@ -41,7 +41,7 @@
             // 
             // graphPanel
             // 
-            this.graphPanel.BackColor = System.Drawing.Color.White;
+            this.graphPanel.BackColor = System.Drawing.Color.DimGray;
             this.graphPanel.ContextMenuStrip = this.contextMenuStrip1;
             this.graphPanel.Dock = System.Windows.Forms.DockStyle.Right;
             this.graphPanel.Location = new System.Drawing.Point(210, 0);
@@ -49,7 +49,9 @@
             this.graphPanel.Size = new System.Drawing.Size(467, 425);
             this.graphPanel.TabIndex = 0;
             this.graphPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.graphPanel_MouseClick);
+            this.graphPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.graphPanel_MouseDown);
             this.graphPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.graphPanel_MouseMove);
+            this.graphPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.graphPanel_MouseUp);
             // 
             // contextMenuStrip1
             // 
@@ -76,13 +78,13 @@
             // toolStripMenuEdge
             // 
             this.toolStripMenuEdge.Name = "toolStripMenuEdge";
-            this.toolStripMenuEdge.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuEdge.Size = new System.Drawing.Size(125, 22);
             this.toolStripMenuEdge.Text = "Add edge";
             // 
             // toolStripMenuRemove
             // 
             this.toolStripMenuRemove.Name = "toolStripMenuRemove";
-            this.toolStripMenuRemove.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuRemove.Size = new System.Drawing.Size(125, 22);
             this.toolStripMenuRemove.Text = "Remove";
             // 
             // Form1

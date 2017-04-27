@@ -15,6 +15,7 @@ namespace Routing_simulator
         Point point;
         Graphics graphics;
         GraphDrawer graphDrawer;
+        Node node;
 
         public Form1()
         {
@@ -37,6 +38,7 @@ namespace Routing_simulator
             else if (e.Button == MouseButtons.Left)
             {
                 contextMenuStrip1.Hide();
+                
             }
         }
 
@@ -44,14 +46,28 @@ namespace Routing_simulator
         private void toolStripMenuRouter_Click(object sender, EventArgs e)
         {
             contextMenuStrip1.Hide();
-            Node node = new Node("test", "255.255.255.00", point);
-            graphDrawer.DrawNode(node);
+            
         }
 
         private void graphPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            point.X = e.X;
-            point.Y = e.Y;
+            point = e.Location;
+            
         }
+
+        private void graphPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void graphPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void rectangle_MouseClick(object sender, MouseEventArgs e)
+        {
+            MessageBox.Show("opaa");
+        }
+
+        
     }
 }

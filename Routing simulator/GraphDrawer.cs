@@ -10,32 +10,21 @@ namespace Routing_simulator
 {
     public class GraphDrawer
     {
-        Graphics graphics;
-        Pen pen;
-        SolidBrush brush;
-        Image image;
-        Rectangle rec;
+        Panel panel;
 
         public GraphDrawer(Panel panel)
         {
-            graphics = panel.CreateGraphics();
-            pen = new Pen(Color.Red);
-            brush = new SolidBrush(Color.Red);
-            image = Routing_simulator.Properties.Resources.RouterImage;
+            this.panel = panel;
         }
 
         public void DrawNode(Node node)
         {
-            Rectangle rec = new Rectangle(node.nodeLocation, new Size(40, 40));
-
-            graphics.DrawImage(image, rec);
+            
         }
 
-        public void UpdateNodePosition(Node node)
+        public void UpdateNodeLocation(Node node, Point loc)
         {
-            rec.X = node.nodeLocation.X;
-            rec.Y = node.nodeLocation.Y;
+            
         }
-
     }
 }
