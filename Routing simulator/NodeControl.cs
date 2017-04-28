@@ -95,23 +95,30 @@ namespace Routing_simulator
 
             //TextureBrush tBrush = new TextureBrush(img); 
             
-            gfx.FillRectangle(new SolidBrush(Parent.BackColor), ClientRectangle);
+            gfx.FillRectangle(new SolidBrush(Color.Transparent), ClientRectangle);
 
             
             Color fill;
+            float border;
             if (Pressed)
             {
                 fill = Color.MediumBlue;
+                border = 2.0f;
             }
             else if (Hovering)
             {
                 fill = Color.Blue;
+                border = 3.0f;
             }
             else
+            {
                 fill = Color.MediumBlue;
+                border = 2.0f;
+            }
+
 
             gfx.FillEllipse(new SolidBrush(fill), rec);
-            gfx.DrawEllipse(new Pen(Color.Black, 2.0f), rec);
+            gfx.DrawEllipse(new Pen(Color.Black, border), rec);
             //gfx.FillEllipse(tBrush, rec);
 
 

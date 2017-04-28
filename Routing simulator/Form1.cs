@@ -46,6 +46,11 @@ namespace Routing_simulator
         private void toolStripMenuRouter_Click(object sender, EventArgs e)
         {
             contextMenuStrip1.Hide();
+            NodeControl nc = new NodeControl();
+            nc.Location = point;
+            nc.Size = new Size(100, 60);
+            nc.Text = "1";
+            graphPanel.Controls.Add(nc);
             
         }
 
