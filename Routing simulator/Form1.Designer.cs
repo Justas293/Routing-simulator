@@ -35,6 +35,8 @@
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuEdge = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuRemove = new System.Windows.Forms.ToolStripMenuItem();
+            this.nodeControl1 = new Routing_simulator.NodeControl();
+            this.graphPanel.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
             this.SuspendLayout();
@@ -43,6 +45,7 @@
             // 
             this.graphPanel.BackColor = System.Drawing.Color.DimGray;
             this.graphPanel.ContextMenuStrip = this.contextMenuStrip1;
+            this.graphPanel.Controls.Add(this.nodeControl1);
             this.graphPanel.Dock = System.Windows.Forms.DockStyle.Right;
             this.graphPanel.Location = new System.Drawing.Point(210, 0);
             this.graphPanel.Name = "graphPanel";
@@ -87,6 +90,15 @@
             this.toolStripMenuRemove.Size = new System.Drawing.Size(125, 22);
             this.toolStripMenuRemove.Text = "Remove";
             // 
+            // nodeControl1
+            // 
+            this.nodeControl1.BackColor = System.Drawing.Color.Blue;
+            this.nodeControl1.Location = new System.Drawing.Point(190, 133);
+            this.nodeControl1.Name = "nodeControl1";
+            this.nodeControl1.Size = new System.Drawing.Size(105, 50);
+            this.nodeControl1.TabIndex = 0;
+            this.nodeControl1.Text = "nodeControl1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -96,6 +108,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.graphPanel.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             this.contextMenuStrip2.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -110,6 +123,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuEdge;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuRemove;
+        private NodeControl nodeControl1;
     }
 }
 

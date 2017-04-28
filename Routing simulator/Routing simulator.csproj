@@ -54,6 +54,12 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Graph.cs" />
+    <Compile Include="NodeControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NodeControl.Designer.cs">
+      <DependentUpon>NodeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="NodeList.cs" />
     <Compile Include="GraphDrawer.cs" />
     <Compile Include="NeighborList.cs" />
