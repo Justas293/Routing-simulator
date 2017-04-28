@@ -47,7 +47,7 @@ namespace Routing_simulator
         {
             contextMenuStrip1.Hide();
             NodeControl nc = new NodeControl();
-            nc.Location = point;
+            nc.Location = new Point(point.X - 20, point.Y - 20);
             nc.Size = new Size(100, 60);
             nc.Text = "1";
             graphPanel.Controls.Add(nc);
