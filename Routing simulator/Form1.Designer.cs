@@ -84,7 +84,6 @@
             this.toolStripMenuEdge.Name = "toolStripMenuEdge";
             this.toolStripMenuEdge.Size = new System.Drawing.Size(125, 22);
             this.toolStripMenuEdge.Text = "Add edge";
-
             // 
             // toolStripMenuRemove
             // 
@@ -100,7 +99,6 @@
             this.buttonAddEdge.TabIndex = 2;
             this.buttonAddEdge.Text = "Add edge";
             this.buttonAddEdge.UseVisualStyleBackColor = true;
-
             // 
             // contextMenuStrip3
             // 
@@ -132,10 +130,10 @@
             this.Controls.Add(this.debudBox);
             this.Controls.Add(this.buttonAddEdge);
             this.Controls.Add(this.graphPanel);
+            this.DoubleBuffered = true;
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-
             this.contextMenuStrip1.ResumeLayout(false);
             this.contextMenuStrip2.ResumeLayout(false);
             this.contextMenuStrip3.ResumeLayout(false);

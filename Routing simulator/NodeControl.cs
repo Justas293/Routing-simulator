@@ -83,6 +83,7 @@ namespace Routing_simulator
         {
             InitializeComponent();
             this.AllowDrop = true;
+            
         }
 
 
