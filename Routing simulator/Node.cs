@@ -18,11 +18,12 @@ namespace Routing_simulator
 
         private string IPAddress { get; set; }
         private string Type { get; set; }
-        private RoutingTable Table { get; set; }
+        public RoutingTable Table;
 
         public Node()
         {
-            
+            Table = new RoutingTable(this.Key);
+            neighbors = new NeighborList();
         }
 
         public void UpdateLocation(Point loc)
@@ -44,5 +45,15 @@ namespace Routing_simulator
         {
             neighbors.Add(e);
         }
+
+        public void SendUpdates()
+        {
+            foreach(Node neighbor in neighbors)
+            {
+                neighbor.Table.Update(this.Table);
+            }
+        }
+
+        
     }
 }
