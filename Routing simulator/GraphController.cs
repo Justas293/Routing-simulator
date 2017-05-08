@@ -17,11 +17,17 @@ namespace Routing_simulator
         List<EdgeVisual> edgeList;
         List<NodeControl> nodeList;
 
+        private int nodeKey = 1;
+
+        private Graph graph;
+
         public GraphController(Panel panel)
         {
             this.panel = panel;
             this.panel.Paint += Panel_Paint;
             edgeList = new List<EdgeVisual>();
+            nodeList = new List<NodeControl>();
+            graph = new Graph();
         }
 
         private void Panel_Paint(object sender, PaintEventArgs e)
@@ -69,15 +75,42 @@ namespace Routing_simulator
             nc.Size = new Size(100, 60);
             nc.Location = new Point(point.X - nc.Width / 2, point.Y - nc.Height / 2);
 
-            nc.Text = "1";
+            nc.Text = FindNextNodeKey().ToString();
             nc.MouseClick += NodeControl_MouseClick;
             nc.DragDrop += NodeControl_DragDrop;
             nc.MouseDown += NodeControl_MouseDown;
             nc.LocationChanged += NodeControl_LocationChanged;
             nc.OnEdgeRemove += NodeControl_OnEdgeRemove;
+            nc.Disposed += NodeControl_Disposed;
+            nc.Node.Key = nc.Text;
 
             panel.Controls.Add(nc);
+            graph.AddNode(nc.Node);
             nodeList.Add(nc);
+
+            FindNextNodeKey();
+        }
+
+        private int FindNextNodeKey()
+        {
+            int max = 1;
+
+            if (nodeList.Count() == 0) return 1;
+
+            foreach(var node in nodeList)
+            {
+                if (int.Parse(node.Node.Key) > max) max = int.Parse(node.Node.Key);
+            }
+            nodeKey = max + 1;
+            return nodeKey;
+        }
+
+        private void NodeControl_Disposed(object sender, EventArgs e)
+        {
+            NodeControl node = (NodeControl)sender;
+            //graph.RemoveNode(node.Node);
+            nodeList.Remove(node);
+            
         }
 
         private void NodeControl_OnEdgeRemove(object sender, EventArgs e)
@@ -130,6 +163,14 @@ namespace Routing_simulator
                 node.Highlighted = false;
             }
             else node.Highlighted = true;
+        }
+
+        public void RemoveHighlights()
+        {
+            foreach(var node in nodeList)
+            {
+                node.Highlighted = false;                
+            }
         }
     }
 }

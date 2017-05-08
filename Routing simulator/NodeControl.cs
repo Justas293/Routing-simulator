@@ -14,10 +14,19 @@ namespace Routing_simulator
     public partial class NodeControl : Control
     {
         public event EventHandler OnEdgeRemove;
+        public event EventHandler OnNodeRemove;
+
+        private Timer timer;
 
         private ContextMenuStrip menu = new ContextMenuStrip();
 
         public Point MouseDownLocation;
+
+        private Node _node;
+        public Node Node
+        {
+            get { return _node; }
+        }
 
         private bool _drawingEdge = false;
         public bool DrawingEdge
@@ -83,9 +92,19 @@ namespace Routing_simulator
         {
             InitializeComponent();
             this.AllowDrop = true;
-            
+
+            _node = new Node();
+
+            timer = new Timer();
+            timer.Interval = 30000;
+            timer.Tick += Timer_Tick;
+            timer.Start();
         }
 
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            //Send RoutingTable to neighbors
+        }
 
         public new string Text
         {
@@ -131,46 +150,13 @@ namespace Routing_simulator
         {
             Hovering = false;
         }
-        /*
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                Pressed = true;
-                MouseDownLocation = e.Location;
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                
-            }
-
-        }
-*/
+ 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
                 Pressed = false;
         }
-        /*
-        protected override void OnMouseClick(MouseEventArgs e)
-        {
-            if(e.Button == MouseButtons.Left)
-            {
-                if (Highlighted)
-                {
-                    Highlighted = false;
-                }
-                else
-                    Highlighted = true;
-
-                
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                menu.Show();
-            }
-        }
-        */
+        
         public void AddContextMenu()
         {
             ContextMenu mnuContextMenu = new ContextMenu();
@@ -199,7 +185,7 @@ namespace Routing_simulator
 
         private void RemoveRouter(object sender, EventArgs e)
         {
-            //clear edges...TO DO
+            _node = null;
             this.Dispose();
             MessageBox.Show("Router removed");
         }

@@ -16,7 +16,7 @@ namespace Routing_simulator
     {
         Point point;
         Graphics graphics;
-        GraphController graphDrawer;
+        GraphController graphController;
 
         public bool ShiftDown = false;
         public bool drawingEdge = false;
@@ -30,7 +30,7 @@ namespace Routing_simulator
         {
             graphics = graphPanel.CreateGraphics();
             point = new Point(0, 0);
-            graphDrawer = new GraphController(graphPanel);
+            graphController = new GraphController(graphPanel);
         }
 
         private void graphPanel_MouseClick(object sender, MouseEventArgs e)
@@ -40,7 +40,7 @@ namespace Routing_simulator
 
         private void toolStripMenuRouter_Click(object sender, EventArgs e)
         {
-            graphDrawer.AddRouter(point);
+            graphController.AddRouter(point);
         }
         
         private void graphPanel_MouseMove(object sender, MouseEventArgs e)
@@ -54,7 +54,9 @@ namespace Routing_simulator
             
         }
 
-
-
+        private void startButton_Click(object sender, EventArgs e)
+        {
+            graphController.RemoveHighlights();
+        }
     }
 }

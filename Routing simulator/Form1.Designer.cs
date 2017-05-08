@@ -39,6 +39,7 @@
             this.contextMenuStrip3 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.edgeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debudBox = new System.Windows.Forms.RichTextBox();
+            this.startButton = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
             this.contextMenuStrip3.SuspendLayout();
@@ -122,11 +123,22 @@
             this.debudBox.TabIndex = 3;
             this.debudBox.Text = "";
             // 
+            // startButton
+            // 
+            this.startButton.Location = new System.Drawing.Point(59, 200);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(100, 34);
+            this.startButton.TabIndex = 4;
+            this.startButton.Text = "Start";
+            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(677, 425);
+            this.Controls.Add(this.startButton);
             this.Controls.Add(this.debudBox);
             this.Controls.Add(this.buttonAddEdge);
             this.Controls.Add(this.graphPanel);
@@ -153,6 +165,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip3;
         private System.Windows.Forms.ToolStripMenuItem edgeToolStripMenuItem;
         private System.Windows.Forms.RichTextBox debudBox;
+        private System.Windows.Forms.Button startButton;
     }
 }
 

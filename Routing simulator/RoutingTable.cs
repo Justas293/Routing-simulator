@@ -8,15 +8,28 @@ namespace Routing_simulator
 {
     public class RoutingTable
     {
-        private List<string> DestinationIP { get; set; }
-        private List<string> NetMask { get; set; }
-        private List<string> NextHopIP { get; set; }
-        private List<int> DistanceMetric { get; set; }
-        private List<Node> NeighborNodes;
+        public List<TableEntry> Routes;
 
         public RoutingTable()
         {
+            Routes = new List<TableEntry>();
+        }
 
+        public void Update(List<TableEntry> neighborTable)
+        {
+
+        }
+
+        public void TriggeredUpdate(TableEntry entry)
+        {
+
+        }
+
+        public TableEntry GetBestRoute()
+        {
+            TableEntry bestRoute = null;
+
+            return bestRoute;
         }
 
     }

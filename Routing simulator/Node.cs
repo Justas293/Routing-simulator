@@ -10,7 +10,7 @@ namespace Routing_simulator
 {
     public class Node
     {
-        public string Key { get; }
+        public string Key { get; set; }
         public NeighborList neighbors;
 
 
