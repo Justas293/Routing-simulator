@@ -13,8 +13,15 @@ namespace Routing_simulator
 {
     public partial class NodeControl : Control
     {
+        public string Key;
+
         public event EventHandler OnEdgeRemove;
         public event EventHandler OnNodeRemove;
+        public event EventHandler OnSendUpdate;
+
+        private List<NodeControl> Neighbors;
+
+        public RoutingTable RoutingTable;
 
         private Timer timer;
 
@@ -22,10 +29,21 @@ namespace Routing_simulator
 
         public Point MouseDownLocation;
 
-        private Node _node;
-        public Node Node
+        ContextMenu mnuContextMenu;
+
+        private bool _disabled = false;
+        public bool Disabled
         {
-            get { return _node; }
+            get { return _disabled; }
+            set
+            {
+                if (value == _disabled)
+                    return;
+
+                _disabled = value;
+
+                Invalidate();
+            }
         }
 
         private bool _drawingEdge = false;
@@ -93,17 +111,47 @@ namespace Routing_simulator
             InitializeComponent();
             this.AllowDrop = true;
 
-            _node = new Node();
-
             timer = new Timer();
-            timer.Interval = 30000;
+            timer.Interval = 10000;
             timer.Tick += Timer_Tick;
             timer.Start();
+
+            Neighbors = new List<NodeControl>();
+            
+            this.Key = this.Text;
+            RoutingTable = new RoutingTable(this.Key);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            //Send RoutingTable to neighbors
+            SendUpdates();
+        }
+
+        private void SendUpdates()
+        {
+            OnSendUpdate(this, new EventArgs());
+            foreach (NodeControl neighbor in Neighbors)
+            {
+                if (neighbor.Disabled)
+                {
+                    this.RoutingTable.Routes.Where(x => x.DestinationNode == neighbor.Key).First().Metric = 16;
+                    TableEntry en = this.RoutingTable.Routes.Where(x => x.DestinationNode == neighbor.Key).First();
+                    SendTriggeredUpdate(en);
+                }
+                neighbor.UpdateTable(this, this.RoutingTable);
+            }
+        }
+
+        private void SendTriggeredUpdate(TableEntry entry)
+        {
+            if(Neighbors != null)
+            {
+                foreach(NodeControl neighbor in Neighbors)
+                {
+                    neighbor.SendTriggeredUpdate(entry);
+                }
+            }
+            
         }
 
         public new string Text
@@ -114,20 +162,23 @@ namespace Routing_simulator
                 if (value == base.Text)
                     return;
                 base.Text = value;
+                this.Key = value;
+                this.RoutingTable.NodeKey = value;
 
                 Invalidate();
                 AddContextMenu();
             }
         }
 
-        
+        public void UpdateTable(NodeControl sender, RoutingTable table)
+        {
+            this.RoutingTable.Update(table);
+        }
 
         protected override void OnDragEnter(DragEventArgs drgevent)
         {
             drgevent.Effect = DragDropEffects.Move;
         }
-
-
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -159,13 +210,29 @@ namespace Routing_simulator
         
         public void AddContextMenu()
         {
-            ContextMenu mnuContextMenu = new ContextMenu();
-            mnuContextMenu.MenuItems.Add("Add edge", new EventHandler(AddEdge));
-            mnuContextMenu.MenuItems.Add("Show routing table", new EventHandler(ClearEdges));
+            mnuContextMenu = new ContextMenu();
+            mnuContextMenu.MenuItems.Add("Disable router", new EventHandler(DisableRouter));
             mnuContextMenu.MenuItems.Add("Remove edges", new EventHandler(RemoveEdges));
             mnuContextMenu.MenuItems.Add("Remove router", new EventHandler(RemoveRouter));
             this.ContextMenu = mnuContextMenu;
             this.ContextMenu = mnuContextMenu;
+        }
+
+        private void DisableRouter(object sender, EventArgs e)
+        {
+            if (Disabled)
+            {
+                Disabled = false;
+                this.timer.Start();
+                this.ContextMenu.MenuItems[0].Text = "Disable router";
+            }
+            else
+            {
+                Disabled = true;
+                this.timer.Stop();
+                this.ContextMenu.MenuItems[0].Text = "Enable router";
+            }
+            
         }
 
         private void RemoveEdges(object sender, EventArgs e)
@@ -173,21 +240,27 @@ namespace Routing_simulator
             OnEdgeRemove(this, new EventArgs());
         }
 
-        private void AddEdge(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void ClearEdges(object sender, EventArgs e)
-        {
-            ////
-        }
-
         private void RemoveRouter(object sender, EventArgs e)
         {
-            _node = null;
+            OnNodeRemove(this, new EventArgs());
             this.Dispose();
-            MessageBox.Show("Router removed");
+        }
+
+        public void AddNeighbor(NodeControl node)
+        {
+            Neighbors.Add(node);
+            RoutingTable.AddRouteToNeighbor(node);
+        }
+
+        public void RemoveNeighbor(NodeControl node)
+        {
+            Neighbors.Remove(node);
+        }
+
+        public bool IsNeighbor(NodeControl node)
+        {
+            if (Neighbors.Contains(node)) return true;
+            else return false;
         }
 
         protected override void OnPaint(PaintEventArgs pe)
@@ -200,9 +273,6 @@ namespace Routing_simulator
             Region rg = new Region(gp);
             
             this.Region = rg;
-
-            //rec.Width -= 1;
-            //rec.Height -= 1;
 
             gfx.FillRectangle(new SolidBrush(Color.Transparent), ClientRectangle);           
                       
@@ -228,7 +298,7 @@ namespace Routing_simulator
             {
                 fill = Color.Orange;
             }
-
+            if (Disabled) fill = Color.Red;
 
             gfx.FillEllipse(new SolidBrush(fill), rec);
             gfx.DrawEllipse(new Pen(Color.Black, border), rec);

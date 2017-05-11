@@ -31,6 +31,13 @@ namespace Routing_simulator
             graphics = graphPanel.CreateGraphics();
             point = new Point(0, 0);
             graphController = new GraphController(graphPanel);
+            graphController.OnRouterClick += GraphController_OnRouterClick;
+        }
+
+        private void GraphController_OnRouterClick(object sender, EventArgs e)
+        {
+            NodeControl node = (NodeControl)sender;
+            RoutingTableView.DataSource = node.RoutingTable.Routes;
         }
 
         private void graphPanel_MouseClick(object sender, MouseEventArgs e)
@@ -46,7 +53,6 @@ namespace Routing_simulator
         private void graphPanel_MouseMove(object sender, MouseEventArgs e)
         {
             point = e.Location;
-            
         }
 
         private void graphPanel_Paint(object sender, PaintEventArgs e)
@@ -58,5 +64,6 @@ namespace Routing_simulator
         {
             graphController.RemoveHighlights();
         }
+
     }
 }

@@ -26,11 +26,15 @@ namespace Routing_simulator
                     if(neighborEntry.DestinationNode == myEntry.DestinationNode)
                     {
                         int newMetric = Min(myEntry.Metric, neighborEntry.Metric + 1);
+                        
+                        if(Min(myEntry.Metric, neighborEntry.Metric + 1) == neighborEntry.Metric + 1)
+                        {
+                            myEntry.NextHop = neighborTable.NodeKey;
+                        }
                         myEntry.Metric = newMetric;
-                        myEntry.NextHop = neighborTable.NodeKey;
                     }
                 }
-                if(!ContainsRoute(this, neighborEntry))
+                if(!ContainsRoute(this, neighborEntry) && neighborEntry.DestinationNode != this.NodeKey)
                 {
                     TableEntry entry = new TableEntry();
                     entry.DestinationNode = neighborEntry.DestinationNode;
@@ -42,14 +46,7 @@ namespace Routing_simulator
         }
 
 
-        public TableEntry GetBestRoute()
-        {
-            TableEntry bestRoute = null;
-
-            return bestRoute;
-        }
-
-        public void AddRouteToNeighbor(Node node)
+        public void AddRouteToNeighbor(NodeControl node)
         {
             TableEntry entry = new TableEntry
             {

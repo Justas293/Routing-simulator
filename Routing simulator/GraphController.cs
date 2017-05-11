@@ -13,13 +13,14 @@ namespace Routing_simulator
 {
     public class GraphController: UserControl
     {
+        public event EventHandler OnRouterClick;
+
         Panel panel;
         List<EdgeVisual> edgeList;
         List<NodeControl> nodeList;
 
         private int nodeKey = 1;
 
-        private Graph graph;
 
         public GraphController(Panel panel)
         {
@@ -27,7 +28,6 @@ namespace Routing_simulator
             this.panel.Paint += Panel_Paint;
             edgeList = new List<EdgeVisual>();
             nodeList = new List<NodeControl>();
-            graph = new Graph();
         }
 
         private void Panel_Paint(object sender, PaintEventArgs e)
@@ -41,14 +41,11 @@ namespace Routing_simulator
             }
         }
 
-        public void DrawNode(Node node)
-        {
-            
-        }
-
         public void AddEdge(EdgeVisual edge)
         {
             edgeList.Add(edge);
+            edge.SourceNode.AddNeighbor(edge.DestinationNode);
+            edge.DestinationNode.AddNeighbor(edge.SourceNode);
             DrawEdges();
         }
 
@@ -58,7 +55,10 @@ namespace Routing_simulator
             {
                 if(edgeList[i].SourceNode == node || edgeList[i].DestinationNode == node)
                 {
+                    edgeList[i].SourceNode.RemoveNeighbor(edgeList[i].DestinationNode);
+                    edgeList[i].DestinationNode.RemoveNeighbor(edgeList[i].SourceNode);
                     edgeList.Remove(edgeList[i]);
+                    i--;
                 }
             }
             DrawEdges();
@@ -71,24 +71,39 @@ namespace Routing_simulator
 
         public void AddRouter(Point point)
         {
-            NodeControl nc = new NodeControl();
-            nc.Size = new Size(100, 60);
-            nc.Location = new Point(point.X - nc.Width / 2, point.Y - nc.Height / 2);
+            if (nodeList.Count < 15)
+            {
+                NodeControl nc = new NodeControl();
+                nc.Size = new Size(100, 60);
+                nc.Location = new Point(point.X - nc.Width / 2, point.Y - nc.Height / 2);
 
-            nc.Text = FindNextNodeKey().ToString();
-            nc.MouseClick += NodeControl_MouseClick;
-            nc.DragDrop += NodeControl_DragDrop;
-            nc.MouseDown += NodeControl_MouseDown;
-            nc.LocationChanged += NodeControl_LocationChanged;
-            nc.OnEdgeRemove += NodeControl_OnEdgeRemove;
-            nc.Disposed += NodeControl_Disposed;
-            nc.Node.Key = nc.Text;
+                nc.Text = FindNextNodeKey().ToString();
+                nc.MouseClick += NodeControl_MouseClick;
+                nc.DragDrop += NodeControl_DragDrop;
+                nc.MouseDown += NodeControl_MouseDown;
+                nc.LocationChanged += NodeControl_LocationChanged;
+                nc.OnEdgeRemove += NodeControl_OnEdgeRemove;
+                nc.OnNodeRemove += Nc_OnNodeRemove;
+                nc.Disposed += NodeControl_Disposed;
+                nc.OnSendUpdate += NodeControl_OnSendUpdate;
 
-            panel.Controls.Add(nc);
-            graph.AddNode(nc.Node);
-            nodeList.Add(nc);
+                panel.Controls.Add(nc);
+                nodeList.Add(nc);
 
-            FindNextNodeKey();
+                FindNextNodeKey();
+            }
+            else MessageBox.Show("Only 15 routers are avaivable in RIPv2!");
+        }
+
+        private void NodeControl_OnSendUpdate(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void Nc_OnNodeRemove(object sender, EventArgs e)
+        {
+            NodeControl node = (NodeControl)sender;
+            RemoveNodeEdges(node);
         }
 
         private int FindNextNodeKey()
@@ -99,7 +114,7 @@ namespace Routing_simulator
 
             foreach(var node in nodeList)
             {
-                if (int.Parse(node.Node.Key) > max) max = int.Parse(node.Node.Key);
+                if (int.Parse(node.Key) > max) max = int.Parse(node.Key);
             }
             nodeKey = max + 1;
             return nodeKey;
@@ -108,9 +123,7 @@ namespace Routing_simulator
         private void NodeControl_Disposed(object sender, EventArgs e)
         {
             NodeControl node = (NodeControl)sender;
-            //graph.RemoveNode(node.Node);
             nodeList.Remove(node);
-            
         }
 
         private void NodeControl_OnEdgeRemove(object sender, EventArgs e)
@@ -158,11 +171,13 @@ namespace Routing_simulator
         private void NodeControl_MouseClick(object sender, MouseEventArgs e)
         {
             NodeControl node = (NodeControl)sender;
-            if (node.Highlighted)
+
+            foreach(NodeControl nd in nodeList)
             {
-                node.Highlighted = false;
+                nd.Highlighted = false;
             }
-            else node.Highlighted = true;
+            node.Highlighted = true;
+            OnRouterClick(node, new EventArgs());
         }
 
         public void RemoveHighlights()

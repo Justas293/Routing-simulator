@@ -40,19 +40,24 @@
             this.edgeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debudBox = new System.Windows.Forms.RichTextBox();
             this.startButton = new System.Windows.Forms.Button();
+            this.RoutingTableView = new System.Windows.Forms.DataGridView();
+            this.timerLabel = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
             this.contextMenuStrip3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RoutingTableView)).BeginInit();
             this.SuspendLayout();
             // 
             // graphPanel
             // 
+            this.graphPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.graphPanel.BackColor = System.Drawing.Color.DimGray;
             this.graphPanel.ContextMenuStrip = this.contextMenuStrip1;
-            this.graphPanel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.graphPanel.Location = new System.Drawing.Point(210, 0);
+            this.graphPanel.Location = new System.Drawing.Point(373, 0);
             this.graphPanel.Name = "graphPanel";
-            this.graphPanel.Size = new System.Drawing.Size(467, 425);
+            this.graphPanel.Size = new System.Drawing.Size(654, 519);
             this.graphPanel.TabIndex = 0;
             this.graphPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.graphPanel_Paint);
             this.graphPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.graphPanel_MouseClick);
@@ -116,28 +121,52 @@
             // 
             // debudBox
             // 
-            this.debudBox.Location = new System.Drawing.Point(9, 266);
+            this.debudBox.Location = new System.Drawing.Point(21, 128);
             this.debudBox.Name = "debudBox";
             this.debudBox.ReadOnly = true;
-            this.debudBox.Size = new System.Drawing.Size(190, 148);
+            this.debudBox.Size = new System.Drawing.Size(346, 148);
             this.debudBox.TabIndex = 3;
             this.debudBox.Text = "";
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(59, 200);
+            this.startButton.Location = new System.Drawing.Point(55, 61);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(100, 34);
+            this.startButton.Size = new System.Drawing.Size(105, 34);
             this.startButton.TabIndex = 4;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
+            // RoutingTableView
+            // 
+            this.RoutingTableView.AllowUserToAddRows = false;
+            this.RoutingTableView.AllowUserToDeleteRows = false;
+            this.RoutingTableView.AllowUserToResizeColumns = false;
+            this.RoutingTableView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.RoutingTableView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.RoutingTableView.Location = new System.Drawing.Point(21, 355);
+            this.RoutingTableView.Name = "RoutingTableView";
+            this.RoutingTableView.ReadOnly = true;
+            this.RoutingTableView.Size = new System.Drawing.Size(346, 164);
+            this.RoutingTableView.TabIndex = 5;
+            // 
+            // timerLabel
+            // 
+            this.timerLabel.AutoSize = true;
+            this.timerLabel.Location = new System.Drawing.Point(272, 333);
+            this.timerLabel.Name = "timerLabel";
+            this.timerLabel.Size = new System.Drawing.Size(10, 13);
+            this.timerLabel.TabIndex = 6;
+            this.timerLabel.Text = " ";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(677, 425);
+            this.ClientSize = new System.Drawing.Size(1027, 531);
+            this.Controls.Add(this.timerLabel);
+            this.Controls.Add(this.RoutingTableView);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.debudBox);
             this.Controls.Add(this.buttonAddEdge);
@@ -149,7 +178,9 @@
             this.contextMenuStrip1.ResumeLayout(false);
             this.contextMenuStrip2.ResumeLayout(false);
             this.contextMenuStrip3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.RoutingTableView)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -166,6 +197,8 @@
         private System.Windows.Forms.ToolStripMenuItem edgeToolStripMenuItem;
         private System.Windows.Forms.RichTextBox debudBox;
         private System.Windows.Forms.Button startButton;
+        private System.Windows.Forms.DataGridView RoutingTableView;
+        private System.Windows.Forms.Label timerLabel;
     }
 }
 
