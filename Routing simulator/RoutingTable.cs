@@ -8,6 +8,8 @@ namespace Routing_simulator
 {
     public class RoutingTable
     {
+        public event EventHandler OnMetricChanged;
+
         public List<TableEntry> Routes;
         public string NodeKey;
 
@@ -21,30 +23,64 @@ namespace Routing_simulator
         {
             foreach(TableEntry neighborEntry in neighborTable.Routes)
             {
-                foreach(TableEntry myEntry in this.Routes)
+                foreach (TableEntry myEntry in this.Routes)
                 {
-                    if(neighborEntry.DestinationNode == myEntry.DestinationNode)
+                    if (neighborEntry.DestinationNode == myEntry.DestinationNode)
                     {
-                        int newMetric = Min(myEntry.Metric, neighborEntry.Metric + 1);
-                        
-                        if(Min(myEntry.Metric, neighborEntry.Metric + 1) == neighborEntry.Metric + 1)
+                        if (myEntry.NextHop == neighborTable.NodeKey && myEntry.Metric != neighborEntry.Metric + 1)
                         {
-                            myEntry.NextHop = neighborTable.NodeKey;
+                            if (neighborEntry.Metric == 16)
+                            {
+                                myEntry.Metric = 16;
+
+                                IEnumerable<TableEntry> unreachableEntries = this.Routes.Where(x => x.NextHop == myEntry.DestinationNode);
+                                foreach(var route in unreachableEntries)
+                                {
+                                    route.Metric = 16;
+                                }
+                            }
+                            else
+                            {
+                                myEntry.Metric = neighborEntry.Metric + 1;
+                                OnMetricChanged(this, new EventArgs());
+                            }
                         }
-                        myEntry.Metric = newMetric;
+                        else
+                        {
+                            if (myEntry.Metric > neighborEntry.Metric + 1)
+                            {
+                                myEntry.NextHop = neighborTable.NodeKey;
+                                myEntry.Metric = neighborEntry.Metric + 1;
+                            }
+                        }
                     }
                 }
-                if(!ContainsRoute(this, neighborEntry) && neighborEntry.DestinationNode != this.NodeKey)
+                if (!ContainsRoute(this, neighborEntry) && neighborEntry.DestinationNode != this.NodeKey)
                 {
-                    TableEntry entry = new TableEntry();
-                    entry.DestinationNode = neighborEntry.DestinationNode;
-                    entry.NextHop = neighborTable.NodeKey;
-                    entry.Metric = neighborEntry.Metric + 1;
-                    this.Routes.Add(entry);
+                     TableEntry entry = new TableEntry();
+                     entry.DestinationNode = neighborEntry.DestinationNode;
+                     entry.NextHop = neighborTable.NodeKey;
+                     entry.Metric = neighborEntry.Metric + 1;
+                     this.Routes.Add(entry);
                 }
+                if(this.Routes.Any(x => x.DestinationNode == neighborTable.NodeKey))
+                {
+                    this.Routes.Where(x => x.DestinationNode == neighborTable.NodeKey).First().Metric = 1;
+                }
+                
             }
         }
 
+        public void UpdateTriggered(TableEntry entry)
+        {
+            TableEntry en = this.Routes.Where(x => x.DestinationNode == entry.DestinationNode).First();
+            if(en.Metric != 16)
+            {
+                en.Metric = entry.Metric;
+                OnMetricChanged(this, new EventArgs());
+            }
+                
+        }
 
         public void AddRouteToNeighbor(NodeControl node)
         {
@@ -54,6 +90,8 @@ namespace Routing_simulator
                 Metric = 1,
                 NextHop = node.Key
             };
+            IEnumerable<TableEntry> entriesToRemove = this.Routes.Where(x => x.DestinationNode == node.Key);
+            if(entriesToRemove != null) this.Routes.Remove(entriesToRemove.FirstOrDefault());
             this.Routes.Add(entry);
         }
 

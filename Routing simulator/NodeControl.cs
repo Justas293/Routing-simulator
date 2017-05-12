@@ -120,6 +120,12 @@ namespace Routing_simulator
             
             this.Key = this.Text;
             RoutingTable = new RoutingTable(this.Key);
+            RoutingTable.OnMetricChanged += RoutingTable_OnMetricChanged;
+        }
+
+        private void RoutingTable_OnMetricChanged(object sender, EventArgs e)
+        {
+            SendTriggeredUpdates(this.RoutingTable);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -136,23 +142,26 @@ namespace Routing_simulator
                 {
                     this.RoutingTable.Routes.Where(x => x.DestinationNode == neighbor.Key).First().Metric = 16;
                     TableEntry en = this.RoutingTable.Routes.Where(x => x.DestinationNode == neighbor.Key).First();
-                    SendTriggeredUpdate(en);
+                    IEnumerable<TableEntry> unreachableEntries = this.RoutingTable.Routes.Where(x => x.NextHop == en.DestinationNode);
+                    foreach (var route in unreachableEntries)
+                    {
+                        route.Metric = 16;
+                    }
+                    SendTriggeredUpdates(this.RoutingTable);
                 }
                 neighbor.UpdateTable(this, this.RoutingTable);
             }
         }
 
-        private void SendTriggeredUpdate(TableEntry entry)
+        private void SendTriggeredUpdates(RoutingTable table)
         {
-            if(Neighbors != null)
+            foreach(NodeControl neighbor in Neighbors)
             {
-                foreach(NodeControl neighbor in Neighbors)
-                {
-                    neighbor.SendTriggeredUpdate(entry);
-                }
+                neighbor.UpdateTable(this, table);
             }
             
         }
+
 
         public new string Text
         {
@@ -224,6 +233,7 @@ namespace Routing_simulator
             {
                 Disabled = false;
                 this.timer.Start();
+                this.Timer_Tick(this, new EventArgs());
                 this.ContextMenu.MenuItems[0].Text = "Disable router";
             }
             else
