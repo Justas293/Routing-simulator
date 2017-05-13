@@ -30,7 +30,7 @@ namespace Routing_simulator
         {
             graphics = graphPanel.CreateGraphics();
             point = new Point(0, 0);
-            graphController = new GraphController(graphPanel);
+            graphController = new GraphController(graphPanel, this.sender, this.receiver);
             graphController.OnRouterClick += GraphController_OnRouterClick;
         }
 
@@ -63,6 +63,8 @@ namespace Routing_simulator
         private void startButton_Click(object sender, EventArgs e)
         {
             graphController.RemoveHighlights();
+
+            graphController.SendPacket(this.textBoxMessage.Text, this.textBoxReceiver.Text);
         }
 
     }

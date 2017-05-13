@@ -16,18 +16,64 @@ namespace Routing_simulator
         public event EventHandler OnRouterClick;
 
         Panel panel;
+        Sender sender;
+        Receiver receiver;
         List<EdgeVisual> edgeList;
         List<NodeControl> nodeList;
 
         private int nodeKey = 1;
 
 
-        public GraphController(Panel panel)
+        public GraphController(Panel panel, Sender sender, Receiver receiver)
         {
             this.panel = panel;
             this.panel.Paint += Panel_Paint;
+
+            this.sender = sender;
+            this.receiver = receiver;
+
+            this.sender.DragDrop += Sender_DragDrop;
+            this.receiver.DragDrop += Receiver_DragDrop;
+
             edgeList = new List<EdgeVisual>();
             nodeList = new List<NodeControl>();
+            
+        }
+
+        public void SendPacket(string message, string destination)
+        {
+            this.sender.SendPacketTo(message, destination);
+        }
+
+        private void Receiver_DragDrop(object sender, DragEventArgs e)
+        {
+            NodeControl sourceNode = (NodeControl)e.Data.GetData(typeof(NodeControl));
+            EdgeVisual edge = new EdgeVisual(sourceNode, this.receiver);
+            try
+            {
+                this.receiver.ConnectToNode(sourceNode);
+                AddEdge(edge);
+            }
+            catch(InvalidOperationException ex)
+            {
+                MessageBox.Show("Only one router can be connected to host!");
+            }
+            
+        }
+
+        private void Sender_DragDrop(object sender, DragEventArgs e)
+        {
+            NodeControl sourceNode = (NodeControl)e.Data.GetData(typeof(NodeControl));
+            EdgeVisual edge = new EdgeVisual(sourceNode, this.sender);
+            try
+            {
+                this.sender.ConnectToNode(sourceNode);
+                AddEdge(edge);
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show("Only one router can be connected to host!");
+            }
         }
 
         private void Panel_Paint(object sender, PaintEventArgs e)
@@ -104,6 +150,14 @@ namespace Routing_simulator
         {
             NodeControl node = (NodeControl)sender;
             RemoveNodeEdges(node);
+            if(node == this.sender.connectedNode)
+            {
+                this.sender.DisconnectRouter();
+            }
+            else if(node == this.receiver.connectedNode)
+            {
+                this.receiver.DisconnectRouter();
+            }
         }
 
         private int FindNextNodeKey()

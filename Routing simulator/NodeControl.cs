@@ -24,12 +24,32 @@ namespace Routing_simulator
         public RoutingTable RoutingTable;
 
         private Timer timer;
+        private Timer sendTimer;
+
+        private Packet packet;
 
         private ContextMenuStrip menu = new ContextMenuStrip();
 
         public Point MouseDownLocation;
 
         ContextMenu mnuContextMenu;
+
+        public bool messageSent = false;
+
+        private bool _sendingMessage = false;
+        public bool SendingMessage
+        {
+            get { return _sendingMessage; }
+            set
+            {
+                if (value == _sendingMessage)
+                    return;
+
+                _sendingMessage = value;
+
+                Invalidate();
+            }
+        }
 
         private bool _disabled = false;
         public bool Disabled
@@ -116,11 +136,58 @@ namespace Routing_simulator
             timer.Tick += Timer_Tick;
             timer.Start();
 
+            sendTimer = new Timer();
+            sendTimer.Interval = 200;
+            sendTimer.Tick += SendTimer_Tick1;
+
             Neighbors = new List<NodeControl>();
             
             this.Key = this.Text;
             RoutingTable = new RoutingTable(this.Key);
             RoutingTable.OnMetricChanged += RoutingTable_OnMetricChanged;
+        }
+
+        private void SendTimer_Tick1(object sender, EventArgs e)
+        {
+            if (packet.destination == this.Key)
+            {
+                StopTimer();
+                SendingMessage = false;
+                MessageBox.Show("Message received on router: " + this.Key + "! Message: " + packet.message);
+                
+            }
+            else
+            {
+                try
+                {
+                    TableEntry entry = this.RoutingTable.Routes.Where(x => x.DestinationNode == packet.destination).First();
+                    if (entry.Metric != 16)
+                    {
+                        NodeControl nextNode = this.Neighbors.Where(x => x.Key == entry.NextHop).First();
+                        if (!nextNode.Disabled)
+                        {
+                            StopTimer();
+                            SendingMessage = false;
+                            nextNode.SendPacket(packet);
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //resend
+                }
+
+            }
+        }
+
+        private void StopTimer()
+        {
+            sendTimer.Stop();
+            sendTimer.Enabled = false;
         }
 
         private void RoutingTable_OnMetricChanged(object sender, EventArgs e)
@@ -133,9 +200,9 @@ namespace Routing_simulator
             SendUpdates();
         }
 
-        private void SendUpdates()
+        public virtual void SendUpdates()
         {
-            OnSendUpdate(this, new EventArgs());
+            //OnSendUpdate(this, new EventArgs());
             foreach (NodeControl neighbor in Neighbors)
             {
                 if (neighbor.Disabled)
@@ -162,6 +229,20 @@ namespace Routing_simulator
             
         }
 
+        public void RemoveRouterFromTable(string routerName)
+        {
+            foreach(TableEntry entry in this.RoutingTable.Routes)
+            {
+                if(entry.DestinationNode == routerName)
+                {
+                    this.RoutingTable.Routes.Remove(entry);
+                    foreach (var router in Neighbors)
+                    {
+                        router.RemoveRouterFromTable(routerName);
+                    }
+                }
+            }
+        }
 
         public new string Text
         {
@@ -177,6 +258,21 @@ namespace Routing_simulator
                 Invalidate();
                 AddContextMenu();
             }
+        }
+
+        public void SendPacket(Packet packet)
+        {
+            if (!messageSent)
+            {
+                this.packet = packet;
+                SendingMessage = true;
+                sendTimer.Start();
+            }
+            else
+            {
+                sendTimer.Stop();
+            }
+            
         }
 
         public void UpdateTable(NodeControl sender, RoutingTable table)
@@ -217,7 +313,7 @@ namespace Routing_simulator
                 Pressed = false;
         }
         
-        public void AddContextMenu()
+        public virtual void AddContextMenu()
         {
             mnuContextMenu = new ContextMenu();
             mnuContextMenu.MenuItems.Add("Disable router", new EventHandler(DisableRouter));
@@ -308,6 +404,7 @@ namespace Routing_simulator
             {
                 fill = Color.Orange;
             }
+            if (SendingMessage) fill = Color.Green;
             if (Disabled) fill = Color.Red;
 
             gfx.FillEllipse(new SolidBrush(fill), rec);

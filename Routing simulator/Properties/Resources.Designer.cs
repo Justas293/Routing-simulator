@@ -63,6 +63,26 @@ namespace Routing_simulator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap host2Image {
+            get {
+                object obj = ResourceManager.GetObject("host2Image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap hostImage {
+            get {
+                object obj = ResourceManager.GetObject("hostImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap RouterImage {
             get {
                 object obj = ResourceManager.GetObject("RouterImage", resourceCulture);
