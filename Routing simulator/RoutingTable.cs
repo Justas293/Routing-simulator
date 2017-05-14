@@ -9,6 +9,7 @@ namespace Routing_simulator
     public class RoutingTable
     {
         public event EventHandler OnMetricChanged;
+        public event EventHandler OnUpdate;
 
         public List<TableEntry> Routes;
         public string NodeKey;
@@ -21,53 +22,61 @@ namespace Routing_simulator
 
         public void Update(RoutingTable neighborTable)
         {
-            foreach(TableEntry neighborEntry in neighborTable.Routes)
+            try
             {
-                foreach (TableEntry myEntry in this.Routes)
+                foreach (TableEntry neighborEntry in neighborTable.Routes)
                 {
-                    if (neighborEntry.DestinationNode == myEntry.DestinationNode)
+                    foreach (TableEntry myEntry in this.Routes)
                     {
-                        if (myEntry.NextHop == neighborTable.NodeKey && myEntry.Metric != neighborEntry.Metric + 1)
+                        if (neighborEntry.DestinationNode == myEntry.DestinationNode)
                         {
-                            if (neighborEntry.Metric == 16)
+                            if (myEntry.NextHop == neighborTable.NodeKey && myEntry.Metric != neighborEntry.Metric + 1)
                             {
-                                myEntry.Metric = 16;
-
-                                IEnumerable<TableEntry> unreachableEntries = this.Routes.Where(x => x.NextHop == myEntry.DestinationNode);
-                                foreach(var route in unreachableEntries)
+                                if (neighborEntry.Metric == 16)
                                 {
-                                    route.Metric = 16;
+                                    myEntry.Metric = 16;
+
+                                    IEnumerable<TableEntry> unreachableEntries = this.Routes.Where(x => x.NextHop == myEntry.DestinationNode);
+                                    foreach (var route in unreachableEntries)
+                                    {
+                                        route.Metric = 16;
+                                    }
+                                }
+                                else
+                                {
+                                    myEntry.Metric = neighborEntry.Metric + 1;
+                                    OnMetricChanged(this, new EventArgs());
                                 }
                             }
                             else
                             {
-                                myEntry.Metric = neighborEntry.Metric + 1;
-                                OnMetricChanged(this, new EventArgs());
-                            }
-                        }
-                        else
-                        {
-                            if (myEntry.Metric > neighborEntry.Metric + 1)
-                            {
-                                myEntry.NextHop = neighborTable.NodeKey;
-                                myEntry.Metric = neighborEntry.Metric + 1;
+                                if (myEntry.Metric > neighborEntry.Metric + 1)
+                                {
+                                    myEntry.NextHop = neighborTable.NodeKey;
+                                    myEntry.Metric = neighborEntry.Metric + 1;
+                                }
                             }
                         }
                     }
+                    if (!ContainsRoute(this, neighborEntry) && neighborEntry.DestinationNode != this.NodeKey)
+                    {
+                        TableEntry entry = new TableEntry();
+                        entry.DestinationNode = neighborEntry.DestinationNode;
+                        entry.NextHop = neighborTable.NodeKey;
+                        entry.Metric = neighborEntry.Metric + 1;
+                        this.Routes.Add(entry);
+                    }
+                    if (this.Routes.Any(x => x.DestinationNode == neighborTable.NodeKey))
+                    {
+                        this.Routes.Where(x => x.DestinationNode == neighborTable.NodeKey).First().Metric = 1;
+                    }
+
                 }
-                if (!ContainsRoute(this, neighborEntry) && neighborEntry.DestinationNode != this.NodeKey)
-                {
-                     TableEntry entry = new TableEntry();
-                     entry.DestinationNode = neighborEntry.DestinationNode;
-                     entry.NextHop = neighborTable.NodeKey;
-                     entry.Metric = neighborEntry.Metric + 1;
-                     this.Routes.Add(entry);
-                }
-                if(this.Routes.Any(x => x.DestinationNode == neighborTable.NodeKey))
-                {
-                    this.Routes.Where(x => x.DestinationNode == neighborTable.NodeKey).First().Metric = 1;
-                }
-                
+            }
+            catch(Exception ex) { }
+            finally
+            {
+                OnUpdate(this, new EventArgs());
             }
         }
 

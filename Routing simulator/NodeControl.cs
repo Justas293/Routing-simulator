@@ -18,8 +18,9 @@ namespace Routing_simulator
         public event EventHandler OnEdgeRemove;
         public event EventHandler OnNodeRemove;
         public event EventHandler OnSendUpdate;
+        public event EventHandler OnNodeTableUpdate;
 
-        private List<NodeControl> Neighbors;
+        public List<NodeControl> Neighbors;
 
         public RoutingTable RoutingTable;
 
@@ -145,6 +146,12 @@ namespace Routing_simulator
             this.Key = this.Text;
             RoutingTable = new RoutingTable(this.Key);
             RoutingTable.OnMetricChanged += RoutingTable_OnMetricChanged;
+            RoutingTable.OnUpdate += RoutingTable_OnUpdate;
+        }
+
+        private void RoutingTable_OnUpdate(object sender, EventArgs e)
+        {
+            if(OnNodeTableUpdate != null) OnNodeTableUpdate(this, new EventArgs());
         }
 
         private void SendTimer_Tick1(object sender, EventArgs e)
@@ -153,7 +160,7 @@ namespace Routing_simulator
             {
                 StopTimer();
                 SendingMessage = false;
-                MessageBox.Show("Message received on router: " + this.Key + "! Message: " + packet.message);
+                MessageBox.Show("Message received on : " + this.Key + Environment.NewLine + "Message: " + packet.message);
                 
             }
             else
@@ -202,7 +209,6 @@ namespace Routing_simulator
 
         public virtual void SendUpdates()
         {
-            //OnSendUpdate(this, new EventArgs());
             foreach (NodeControl neighbor in Neighbors)
             {
                 if (neighbor.Disabled)
@@ -214,6 +220,7 @@ namespace Routing_simulator
                     {
                         route.Metric = 16;
                     }
+                    OnNodeTableUpdate(this, new EventArgs());
                     SendTriggeredUpdates(this.RoutingTable);
                 }
                 neighbor.UpdateTable(this, this.RoutingTable);
@@ -231,16 +238,20 @@ namespace Routing_simulator
 
         public void RemoveRouterFromTable(string routerName)
         {
-            foreach(TableEntry entry in this.RoutingTable.Routes)
+            for(int i=0; i<this.RoutingTable.Routes.Count; i++)
             {
-                if(entry.DestinationNode == routerName)
+
+                if(this.RoutingTable.Routes[i].Metric != 1)
                 {
-                    this.RoutingTable.Routes.Remove(entry);
-                    foreach (var router in Neighbors)
-                    {
-                        router.RemoveRouterFromTable(routerName);
-                    }
+                    this.RoutingTable.Routes.Remove(this.RoutingTable.Routes[i]);
+                    i--;
                 }
+                else if(this.RoutingTable.Routes[i].DestinationNode == routerName)
+                {
+                    this.RoutingTable.Routes.Remove(this.RoutingTable.Routes[i]);
+                    i--;
+                }
+                
             }
         }
 
@@ -272,7 +283,6 @@ namespace Routing_simulator
             {
                 sendTimer.Stop();
             }
-            
         }
 
         public void UpdateTable(NodeControl sender, RoutingTable table)

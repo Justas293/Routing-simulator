@@ -32,10 +32,22 @@ namespace Routing_simulator
             point = new Point(0, 0);
             graphController = new GraphController(graphPanel, this.sender, this.receiver);
             graphController.OnRouterClick += GraphController_OnRouterClick;
+            graphController.OnNodeTableUpdate += GraphController_OnNodeTableUpdate;
+        }
+
+        private void GraphController_OnNodeTableUpdate(object sender, EventArgs e)
+        {
+            NodeControl node = (NodeControl)sender;
+            if (node.Highlighted)
+            {
+                RoutingTableView.DataSource = null;
+                RoutingTableView.DataSource = node.RoutingTable.Routes;
+            }
         }
 
         private void GraphController_OnRouterClick(object sender, EventArgs e)
         {
+            RoutingTableView.DataSource = null;
             NodeControl node = (NodeControl)sender;
             RoutingTableView.DataSource = node.RoutingTable.Routes;
         }

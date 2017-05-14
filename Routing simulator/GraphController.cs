@@ -14,6 +14,7 @@ namespace Routing_simulator
     public class GraphController: UserControl
     {
         public event EventHandler OnRouterClick;
+        public event EventHandler OnNodeTableUpdate;
 
         Panel panel;
         Sender sender;
@@ -31,13 +32,15 @@ namespace Routing_simulator
 
             this.sender = sender;
             this.receiver = receiver;
+            
 
             this.sender.DragDrop += Sender_DragDrop;
             this.receiver.DragDrop += Receiver_DragDrop;
 
             edgeList = new List<EdgeVisual>();
             nodeList = new List<NodeControl>();
-            
+            nodeList.Add(this.sender);
+            nodeList.Add(this.receiver);
         }
 
         public void SendPacket(string message, string destination)
@@ -132,6 +135,7 @@ namespace Routing_simulator
                 nc.OnNodeRemove += Nc_OnNodeRemove;
                 nc.Disposed += NodeControl_Disposed;
                 nc.OnSendUpdate += NodeControl_OnSendUpdate;
+                nc.OnNodeTableUpdate += Nc_OnNodeTableUpdate;
 
                 panel.Controls.Add(nc);
                 nodeList.Add(nc);
@@ -139,6 +143,11 @@ namespace Routing_simulator
                 FindNextNodeKey();
             }
             else MessageBox.Show("Only 15 routers are avaivable in RIPv2!");
+        }
+
+        private void Nc_OnNodeTableUpdate(object sender, EventArgs e)
+        {
+            OnNodeTableUpdate((NodeControl)sender, new EventArgs());
         }
 
         private void NodeControl_OnSendUpdate(object sender, EventArgs e)
@@ -158,6 +167,15 @@ namespace Routing_simulator
             {
                 this.receiver.DisconnectRouter();
             }
+
+            for(int i=0; i < nodeList.Count; i++)
+            {
+                foreach(var n in nodeList)
+                {
+                    n.RemoveRouterFromTable(node.Key);
+                    OnNodeTableUpdate(n, new EventArgs());
+                }
+            }
         }
 
         private int FindNextNodeKey()
@@ -166,7 +184,7 @@ namespace Routing_simulator
 
             if (nodeList.Count() == 0) return 1;
 
-            foreach(var node in nodeList)
+            foreach(var node in nodeList.Skip(2))
             {
                 if (int.Parse(node.Key) > max) max = int.Parse(node.Key);
             }
@@ -184,6 +202,24 @@ namespace Routing_simulator
         {
             NodeControl node = (NodeControl)sender;
             RemoveNodeEdges(node);
+            if (node == this.sender.connectedNode)
+            {
+                this.sender.DisconnectRouter();
+            }
+            else if (node == this.receiver.connectedNode)
+            {
+                this.receiver.DisconnectRouter();
+            }
+            for (int i = 0; i < nodeList.Count; i++)
+            {
+                foreach (var n in nodeList)
+                {
+                    n.RemoveRouterFromTable(node.Key);
+                    OnNodeTableUpdate(n, new EventArgs());
+                }
+            }
+            node.RoutingTable.Routes.Clear();
+            OnNodeTableUpdate(node, new EventArgs());
         }
 
         private void NodeControl_LocationChanged(object sender, EventArgs e)
