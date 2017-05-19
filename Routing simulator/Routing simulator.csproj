@@ -55,11 +55,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EdgeVisual.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="Ripv2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Ripv2.Designer.cs">
+      <DependentUpon>Ripv2.cs</DependentUpon>
     </Compile>
     <Compile Include="NodeControl.cs">
       <SubType>Component</SubType>
@@ -81,8 +81,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TableEntry.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Ripv2.resx">
+      <DependentUpon>Ripv2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

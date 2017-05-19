@@ -15,12 +15,13 @@ namespace Routing_simulator
     {
         public event EventHandler OnRouterClick;
         public event EventHandler OnNodeTableUpdate;
+        public event EventHandler OnNodeListChange;
 
         Panel panel;
         Sender sender;
         Receiver receiver;
-        List<EdgeVisual> edgeList;
-        List<NodeControl> nodeList;
+        private List<EdgeVisual> edgeList;
+        public List<NodeControl> nodeList;
 
         private int nodeKey = 1;
 
@@ -39,8 +40,8 @@ namespace Routing_simulator
 
             edgeList = new List<EdgeVisual>();
             nodeList = new List<NodeControl>();
-            nodeList.Add(this.sender);
             nodeList.Add(this.receiver);
+            nodeList.Add(this.sender);
         }
 
         public void SendPacket(string message, string destination)
@@ -126,7 +127,7 @@ namespace Routing_simulator
                 nc.Size = new Size(100, 60);
                 nc.Location = new Point(point.X - nc.Width / 2, point.Y - nc.Height / 2);
 
-                nc.Text = FindNextNodeKey().ToString();
+                nc.Text = "R" + FindNextNodeKey().ToString();
                 nc.MouseClick += NodeControl_MouseClick;
                 nc.DragDrop += NodeControl_DragDrop;
                 nc.MouseDown += NodeControl_MouseDown;
@@ -139,10 +140,10 @@ namespace Routing_simulator
 
                 panel.Controls.Add(nc);
                 nodeList.Add(nc);
-
-                FindNextNodeKey();
+                OnNodeListChange(this, new EventArgs());
+                //FindNextNodeKey();
             }
-            else MessageBox.Show("Only 15 routers are avaivable in RIPv2!");
+            else MessageBox.Show("Only 15 nodes are avaivable in RIPv2!");
         }
 
         private void Nc_OnNodeTableUpdate(object sender, EventArgs e)
@@ -176,17 +177,19 @@ namespace Routing_simulator
                     OnNodeTableUpdate(n, new EventArgs());
                 }
             }
+            OnNodeListChange(this, new EventArgs());
         }
 
         private int FindNextNodeKey()
         {
-            int max = 1;
+            int max = 0;
 
             if (nodeList.Count() == 0) return 1;
 
             foreach(var node in nodeList.Skip(2))
             {
-                if (int.Parse(node.Key) > max) max = int.Parse(node.Key);
+                string str = node.Key.Remove(0,1);
+                if (int.Parse(str) > max) max = int.Parse(node.Key.Remove(0,1));
             }
             nodeKey = max + 1;
             return nodeKey;

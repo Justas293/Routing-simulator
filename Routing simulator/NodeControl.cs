@@ -13,7 +13,7 @@ namespace Routing_simulator
 {
     public partial class NodeControl : Control
     {
-        public string Key;
+        public string Key { get; set; }
 
         public event EventHandler OnEdgeRemove;
         public event EventHandler OnNodeRemove;
@@ -213,7 +213,9 @@ namespace Routing_simulator
             {
                 if (neighbor.Disabled)
                 {
-                    this.RoutingTable.Routes.Where(x => x.DestinationNode == neighbor.Key).First().Metric = 16;
+                    TableEntry entry = this.RoutingTable.Routes.Where(x => x.DestinationNode == neighbor.Key).First();
+                    if (entry != null) entry.Metric = 16;
+                    //this.RoutingTable.Routes.Where(x => x.DestinationNode == neighbor.Key).First().Metric = 16;
                     TableEntry en = this.RoutingTable.Routes.Where(x => x.DestinationNode == neighbor.Key).First();
                     IEnumerable<TableEntry> unreachableEntries = this.RoutingTable.Routes.Where(x => x.NextHop == en.DestinationNode);
                     foreach (var route in unreachableEntries)

@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Routing_simulator
 {
-    public partial class Form1 :Form
+    public partial class RIPv2 :Form
     {
         Point point;
         Graphics graphics;
@@ -21,7 +21,7 @@ namespace Routing_simulator
         public bool ShiftDown = false;
         public bool drawingEdge = false;
         
-        public Form1()
+        public RIPv2()
         {
             InitializeComponent();           
         }
@@ -33,6 +33,15 @@ namespace Routing_simulator
             graphController = new GraphController(graphPanel, this.sender, this.receiver);
             graphController.OnRouterClick += GraphController_OnRouterClick;
             graphController.OnNodeTableUpdate += GraphController_OnNodeTableUpdate;
+            graphController.OnNodeListChange += GraphController_OnNodeListChange;
+        }
+
+        private void GraphController_OnNodeListChange(object sender, EventArgs e)
+        {
+            comboBoxReceiver.DataSource = null;
+            comboBoxReceiver.DataSource = graphController.nodeList.Where(x => x.Key != "Sender").ToList();
+            comboBoxReceiver.DisplayMember = "Key";
+            comboBoxReceiver.ValueMember = "Key";
         }
 
         private void GraphController_OnNodeTableUpdate(object sender, EventArgs e)
@@ -75,8 +84,7 @@ namespace Routing_simulator
         private void startButton_Click(object sender, EventArgs e)
         {
             graphController.RemoveHighlights();
-
-            graphController.SendPacket(this.textBoxMessage.Text, this.textBoxReceiver.Text);
+            graphController.SendPacket(this.textBoxMessage.Text, this.comboBoxReceiver.SelectedValue.ToString());
         }
 
     }

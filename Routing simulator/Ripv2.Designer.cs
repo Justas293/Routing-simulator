@@ -1,6 +1,6 @@
 ﻿namespace Routing_simulator
 {
-    partial class Form1
+    partial class RIPv2
     {
         /// <summary>
         /// Required designer variable.
@@ -32,6 +32,8 @@
             this.graphPanel = new System.Windows.Forms.Panel();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuRouter = new System.Windows.Forms.ToolStripMenuItem();
+            this.receiver = new Routing_simulator.Receiver();
+            this.sender = new Routing_simulator.Sender();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuEdge = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuRemove = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,11 +42,10 @@
             this.debudBox = new System.Windows.Forms.RichTextBox();
             this.startButton = new System.Windows.Forms.Button();
             this.RoutingTableView = new System.Windows.Forms.DataGridView();
-            this.timerLabel = new System.Windows.Forms.Label();
-            this.receiver = new Routing_simulator.Receiver();
-            this.sender = new Routing_simulator.Sender();
-            this.textBoxReceiver = new System.Windows.Forms.TextBox();
             this.textBoxMessage = new System.Windows.Forms.RichTextBox();
+            this.comboBoxReceiver = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.graphPanel.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
@@ -82,6 +83,40 @@
             this.toolStripMenuRouter.Size = new System.Drawing.Size(131, 22);
             this.toolStripMenuRouter.Text = "Add router";
             this.toolStripMenuRouter.Click += new System.EventHandler(this.toolStripMenuRouter_Click);
+            // 
+            // receiver
+            // 
+            this.receiver.AllowDrop = true;
+            this.receiver.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.receiver.Disabled = false;
+            this.receiver.DrawingEdge = false;
+            this.receiver.Highlighted = false;
+            this.receiver.Hovering = false;
+            this.receiver.Key = "Receiver";
+            this.receiver.Location = new System.Drawing.Point(568, 196);
+            this.receiver.Name = "receiver";
+            this.receiver.Pressed = false;
+            this.receiver.SendingMessage = false;
+            this.receiver.Size = new System.Drawing.Size(74, 82);
+            this.receiver.TabIndex = 1;
+            this.receiver.Text = "Receiver";
+            // 
+            // sender
+            // 
+            this.sender.AllowDrop = true;
+            this.sender.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.sender.Disabled = false;
+            this.sender.DrawingEdge = false;
+            this.sender.Highlighted = false;
+            this.sender.Hovering = false;
+            this.sender.Key = "Sender";
+            this.sender.Location = new System.Drawing.Point(3, 196);
+            this.sender.Name = "sender";
+            this.sender.Pressed = false;
+            this.sender.SendingMessage = false;
+            this.sender.Size = new System.Drawing.Size(80, 80);
+            this.sender.TabIndex = 0;
+            this.sender.Text = "Sender";
             // 
             // contextMenuStrip2
             // 
@@ -142,82 +177,62 @@
             this.RoutingTableView.AllowUserToResizeColumns = false;
             this.RoutingTableView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RoutingTableView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.RoutingTableView.Location = new System.Drawing.Point(21, 355);
+            this.RoutingTableView.Location = new System.Drawing.Point(21, 282);
             this.RoutingTableView.Name = "RoutingTableView";
             this.RoutingTableView.ReadOnly = true;
-            this.RoutingTableView.Size = new System.Drawing.Size(346, 164);
+            this.RoutingTableView.Size = new System.Drawing.Size(346, 237);
             this.RoutingTableView.TabIndex = 5;
-            // 
-            // timerLabel
-            // 
-            this.timerLabel.AutoSize = true;
-            this.timerLabel.Location = new System.Drawing.Point(272, 333);
-            this.timerLabel.Name = "timerLabel";
-            this.timerLabel.Size = new System.Drawing.Size(10, 13);
-            this.timerLabel.TabIndex = 6;
-            this.timerLabel.Text = " ";
-            // 
-            // receiver
-            // 
-            this.receiver.AllowDrop = true;
-            this.receiver.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.receiver.Disabled = false;
-            this.receiver.DrawingEdge = false;
-            this.receiver.Highlighted = false;
-            this.receiver.Hovering = false;
-            this.receiver.Location = new System.Drawing.Point(568, 196);
-            this.receiver.Name = "receiver";
-            this.receiver.Pressed = false;
-            this.receiver.Size = new System.Drawing.Size(74, 82);
-            this.receiver.TabIndex = 1;
-            this.receiver.Text = "Receiver";
-            // 
-            // sender
-            // 
-            this.sender.AllowDrop = true;
-            this.sender.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.sender.Disabled = false;
-            this.sender.DrawingEdge = false;
-            this.sender.Highlighted = false;
-            this.sender.Hovering = false;
-            this.sender.Location = new System.Drawing.Point(3, 196);
-            this.sender.Name = "sender";
-            this.sender.Pressed = false;
-            this.sender.Size = new System.Drawing.Size(80, 80);
-            this.sender.TabIndex = 0;
-            this.sender.Text = "Sender";
-            // 
-            // textBoxReceiver
-            // 
-            this.textBoxReceiver.Location = new System.Drawing.Point(21, 30);
-            this.textBoxReceiver.Name = "textBoxReceiver";
-            this.textBoxReceiver.Size = new System.Drawing.Size(105, 20);
-            this.textBoxReceiver.TabIndex = 7;
-            this.textBoxReceiver.Text = "Receiver";
             // 
             // textBoxMessage
             // 
-            this.textBoxMessage.Location = new System.Drawing.Point(168, 30);
+            this.textBoxMessage.Location = new System.Drawing.Point(168, 43);
             this.textBoxMessage.Name = "textBoxMessage";
-            this.textBoxMessage.Size = new System.Drawing.Size(170, 74);
+            this.textBoxMessage.Size = new System.Drawing.Size(170, 61);
             this.textBoxMessage.TabIndex = 8;
             this.textBoxMessage.Text = "";
             // 
-            // Form1
+            // comboBoxReceiver
+            // 
+            this.comboBoxReceiver.FormattingEnabled = true;
+            this.comboBoxReceiver.Location = new System.Drawing.Point(21, 43);
+            this.comboBoxReceiver.Name = "comboBoxReceiver";
+            this.comboBoxReceiver.Size = new System.Drawing.Size(105, 21);
+            this.comboBoxReceiver.TabIndex = 9;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(18, 27);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(47, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Send to:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(165, 27);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 13);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Message:";
+            // 
+            // RIPv2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1027, 531);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.comboBoxReceiver);
             this.Controls.Add(this.textBoxMessage);
-            this.Controls.Add(this.textBoxReceiver);
-            this.Controls.Add(this.timerLabel);
             this.Controls.Add(this.RoutingTableView);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.debudBox);
             this.Controls.Add(this.graphPanel);
             this.DoubleBuffered = true;
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "RIPv2";
+            this.Text = "RIPv2";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.graphPanel.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
@@ -242,11 +257,12 @@
         private System.Windows.Forms.RichTextBox debudBox;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.DataGridView RoutingTableView;
-        private System.Windows.Forms.Label timerLabel;
         private Sender sender;
         private Receiver receiver;
-        private System.Windows.Forms.TextBox textBoxReceiver;
         private System.Windows.Forms.RichTextBox textBoxMessage;
+        private System.Windows.Forms.ComboBox comboBoxReceiver;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 
